@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Collaborator{
+  regist Int @id @unique
+  email String
+  name String
+  last_name String
+  departament String
+  role String
+  image String
+  reactions_recived Reaction[] @relation(name: "received reaction") //Sem o nome da relação gera ambiguidade
+  reactions_sended Reaction[] @relation(name: "sended reaction") //Sem o nome da relação gera ambiguidade
+  reactions_count Int
+}
+
+// enum ReactName {
+// 	LIKE
+// 	ORGULHO
+// 	EXCELENTE_TRABALHO
+// 	COLABORACAO
+// }
+
+
+model Reaction{
+  id Int @id @unique @default(autoincrement())
+  reactionName String
+  description String
+  point Int
+  collaborator_received_regist Collaborator @relation(fields: [collaboratorReceivedRegist], references: [regist], name: "received reaction") //Sem o nome da relação gera ambiguidade
+  collaboratorReceivedRegist Int 
+  collaborator_sended_regist Collaborator @relation(fields: [collaboratorSendedRegist], references: [regist], name: "sended reaction") //Sem o nome da relação gera ambiguidade
+  collaboratorSendedRegist Int
+}
